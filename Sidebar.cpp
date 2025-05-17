@@ -24,6 +24,7 @@ public:
     virtual void update() {
         scrollHeight += GetMouseWheelMoveV().y * -scrollSens;
         if (scrollHeight < 1) scrollHeight = 0; // User can't scroll back further than the beginning of the list
+        after_update();
     }
 
     virtual void after_update() {}
