@@ -8,6 +8,7 @@ template<class T>
 class Sidebar {
 public:
     int width;
+    int itemHeight = 16;
 
     const int BORDER_THICKNESS = 4;
 
@@ -23,8 +24,8 @@ public:
     }
 
     void draw_item(int idx, const char* label) {
-        auto currentY = (24 * idx) - scrollHeight;
-        auto itemBoundingRect = Rectangle{0, (float)currentY, (float)width, 24};
+        auto currentY = (itemHeight * idx) - scrollHeight;
+        auto itemBoundingRect = Rectangle{0, (float)currentY, (float)width, (float)itemHeight};
         if (CheckCollisionPointRec(GetMousePosition(), itemBoundingRect)) {
             DrawRectangleRec(itemBoundingRect, DARKGRAY);
             SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
