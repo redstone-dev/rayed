@@ -2,7 +2,7 @@
 #include <raylib.h>
 #include <string>
 #include "Sidebar.cpp"
-#include "raygui-4.0/src/raygui.h"
+#include "raygui/src/raygui.h"
 
 class MainWindow {
 public:

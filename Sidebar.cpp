@@ -37,6 +37,7 @@ public:
 
         // Draw mouseover highlight (if any)
         if (CheckCollisionPointRec(GetMousePosition(), itemBoundingRect)) {
+            DrawText("HIGHLIGHT", 200, 200, 20, RED);
             DrawRectangleRec(itemBoundingRect, DARKGRAY);
             SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) selectedItem = items[idx - 1];
