@@ -3,6 +3,8 @@
 #include <string>
 #include "Sidebar.cpp"
 #include "raygui/src/raygui.h"
+#include "debug.hpp"
+
 
 class MainWindow {
 public:
@@ -23,6 +25,7 @@ public:
             screenSize.y = GetScreenHeight();
         }
         sidebar->update();
+
     }
 
     void draw()

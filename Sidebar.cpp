@@ -1,6 +1,10 @@
 #include <raylib.h>
 #include <vector>
 #include <filesystem>
+#include "debug.hpp"
+#ifdef DEBUG
+#include <iostream>
+#endif
 
 using namespace std::filesystem;
 
@@ -33,7 +37,8 @@ public:
     void draw_item(int idx, const char* label) {
         auto currentY = (itemHeight * idx) - scrollHeight;
 
-        auto itemBoundingRect = Rectangle{0, (float)currentY, (float)width, (float)itemHeight};
+        auto itemBoundingRect = Rectangle{0, (float)currentY, 200, (float)itemHeight};
+        //     Hardcoding this is the only way it works. Evil ^
 
         // Draw mouseover highlight (if any)
         if (CheckCollisionPointRec(GetMousePosition(), itemBoundingRect)) {
