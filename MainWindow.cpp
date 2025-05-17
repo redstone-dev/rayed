@@ -12,9 +12,7 @@ public:
     void init()
     {
         sidebar = new FileSidebar();
-        sidebar->width = 200;
         for (int i = 0; i < 11; i++) sidebar->items.push_back(std::to_string(i));
-        sidebar->scrollSens = 4.f;
     }
 
     void update()
