@@ -14,3 +14,14 @@ is very easy on linux -- just use your package manager, and search for
 I don't know how to do that on Windows. On macOS, brew might work.
 
 After installing raylib, just run `build.sh`.
+
+## Bugs & crashes
+
+Find a bug or a crash? Please report it! 
+
+Specifically for segfaults, you should ideally:
+  1. compile `rayed` from source with debug flags
+  2. pop the resulting executable into `gdb` and run it
+  3. replicate said segfault
+  4. get a backtrace (enter `bt` into the `gdb` console) 
+  5. include said backtrace in your report
