@@ -13,7 +13,12 @@ is very easy on linux -- just use your package manager, and search for
 
 I don't know how to do that on Windows. On macOS, brew might work.
 
-After installing raylib, just run `build.sh`.
+After installing raylib, just run `build.sh`. 
+
+> To create a tarball for
+a github release, run `build.sh -A<arch> -O<os>`, where `<arch>` is your
+CPU architecture (`amd64`/`aarch64`/whatever) and `<os>` is your OS
+(`linux`/`mac`/`win`).
 
 ## Bugs & crashes
 
