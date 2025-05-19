@@ -100,5 +100,19 @@ public:
         // Draw title
         DrawRectangle(0, yOffset, width, itemHeight, DARKGRAY);
         DrawText(title.c_str(), 0, yOffset, globalSidebarFontSize * 0.8f, WHITE);
+
+        // draw little button to go to parent directory
+        auto parentDirBtnBounds = Rectangle { (float)width - 20, 0, 20, 20 };
+        DrawRectangleRec(parentDirBtnBounds, GRAY);
+        if (CheckCollisionPointRec(GetMousePosition(), parentDirBtnBounds)) {
+            DrawRectangle(parentDirBtnBounds.x + 5, parentDirBtnBounds.y,
+                          parentDirBtnBounds.width - 5, parentDirBtnBounds.height, DARKGRAY);
+            if (IsMouseButtonReleased(0)) {
+                currentDir = currentDir.parent_path();
+                update_items();
+            }
+        }
+        DrawText("..", width - 20, 0, globalSidebarFontSize * 0.8f, WHITE);
+
     }
 };
