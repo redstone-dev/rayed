@@ -1,4 +1,4 @@
-CMD="clang++ main.cpp -o out -lraylib -Iraygui/src -Wextra -Wall"
+CMD="g++ main.cpp -o out -lraylib -Iraygui/src -Wextra -Wall"
 
 for arg in "$@"; do
     CMD+=" -D$arg"

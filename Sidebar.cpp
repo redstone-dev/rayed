@@ -38,7 +38,7 @@ public:
     virtual void after_update() {}
 
     // Draws a sidebar item
-    void draw_item(int idx, const char* label) {
+    void draw_item(int idx, const char* label, Color colour) {
         auto currentY = yOffset + (itemHeight * idx) - scrollHeight;
 
         auto itemBoundingRect = Rectangle{0, (float)currentY, 200, (float)itemHeight};
@@ -57,7 +57,7 @@ public:
         if (selectedItem == items[idx - 1]) DrawRectangleRec(itemBoundingRect, GRAY);
 
         // Item label text
-        DrawText(label, yOffset, currentY, globalSidebarFontSize, WHITE);
+        DrawText(label, yOffset, currentY, globalSidebarFontSize, colour);
 
     }
 
@@ -68,6 +68,10 @@ public:
 
 class FileSidebar : public Sidebar<path> {
 public:
+    const Color FILE_COLOUR = WHITE;
+    const Color DIR_COLOUR  = LIME;
+    const Color EXE_COLOUR  = SKYBLUE;
+
     std::string title = "Getting pwd...";
     int width = 200;
     float scrollSens = 4.f;
@@ -89,10 +93,12 @@ public:
         int i = 0;
         for (path path : items) {
             if (!path.has_filename()) continue;
-            draw_item(++i, path.filename().c_str());
+            auto label = path.filename().string();
+            if (is_directory(path)) label += "/";
+            draw_item(++i, label.c_str(), is_directory(path) ? DIR_COLOUR : FILE_COLOUR);
         }
         // Draw title
         DrawRectangle(0, yOffset, width, itemHeight, DARKGRAY);
-        DrawText(title.c_str(), 0, yOffset, globalSidebarFontSize, WHITE);
+        DrawText(title.c_str(), 0, yOffset, globalSidebarFontSize * 0.8f, WHITE);
     }
 };

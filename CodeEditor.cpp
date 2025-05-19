@@ -2,19 +2,33 @@
 #include <raylib.h>
 #include <filesystem>
 #include <fstream>
+#include <vector>
+#include <iostream>
 
 int globalCodeEditorFontSize = 20;
 
 class CodeEditor {
     public:
     std::string buffer;
+    int longestLineLength = 0;
     std::filesystem::path curPath;
+    Font font;
 
     int x; int y;
 
-    unsigned long cursorPos;
+    long cursorPos;
     long scrollHeight;
     float scrollSens = 20.f;
+
+    int tabToSpaces = 4;
+
+    Vector2 charSpacing = { 0.5f, 1.5f };
+    enum CursorStyle { VERTICAL, UNDER } cursorStyle;
+
+    CodeEditor() {
+        font = LoadFontEx("MartianMono-Regular.ttf", globalCodeEditorFontSize, NULL, 0);
+        cursorStyle = VERTICAL;
+    }
 
     void loadFile() {
         buffer.clear();
@@ -22,18 +36,100 @@ class CodeEditor {
         file.open(curPath);
         std::string line;
         if (file.is_open()) {
-            while (std::getline(file, line)) buffer += line + '\n';
+            while (std::getline(file, line)) {
+                buffer += line + '\n';
+                if (line.length() > longestLineLength) longestLineLength = line.length();
+            }
             file.close();
         }
+    }
+
+    bool IsKeyPressedAndRepeat(KeyboardKey key) {
+        return IsKeyPressed(key) || IsKeyPressedRepeat(key);
+    }
+
+    std::string getLineContainsIdx(long idx, char delim) {
+        long start = idx, end = idx;
+        while((buffer[start] != delim && buffer[end] != delim) || (start != 0 && end == buffer.size())) {
+            if (buffer[start] != delim) start--;
+            if (buffer[end]   != delim) end++;
+            if (start < 0) start = 0;
+            if (end > buffer.size()) end = buffer.size();
+        }
+        //start++; end--;
+        return buffer.substr(start, end - start);
     }
 
     void update() {
         scrollHeight += GetMouseWheelMoveV().y * -scrollSens;
         if (scrollHeight < 0) scrollHeight = 0; // User can't scroll back further than the beginning of the list
+
+        // Handle special keypresses
+        if (IsKeyPressedAndRepeat(KEY_RIGHT)) {
+            cursorPos++;
+            return;
+        }
+        if (IsKeyPressedAndRepeat(KEY_LEFT) && cursorPos - 1 > -1) {
+            cursorPos--;
+            return;
+        }
+        if (IsKeyPressedAndRepeat(KEY_BACKSPACE) && cursorPos - 1 > -1) {
+            buffer.erase(buffer.begin() + --cursorPos);
+            return;
+        }
+        if (IsKeyPressedAndRepeat(KEY_ENTER)) {
+            buffer.insert(buffer.begin() + cursorPos++, '\n');
+            return;
+        }
+        // TODO: fix line jumping
+        // if (IsKeyPressedAndRepeat(KEY_DOWN)) {
+        //     std::cout << getLineContainsIdx(cursorPos, '\n') << std::endl;
+        // }
+        // Otherwise, type it in
+        auto key = (char)GetCharPressed();
+        if (key)
+            buffer.insert(buffer.begin() + cursorPos++, key);
+    }
+
+    void drawCursor(Vector2 pos) {
+        switch(cursorStyle) {
+            case VERTICAL:
+                DrawRectangle(pos.x + globalCodeEditorFontSize * charSpacing.x, pos.y, 2, globalCodeEditorFontSize, WHITE);
+                break;
+            case UNDER:
+                DrawRectangle(pos.x, pos.y + globalCodeEditorFontSize, globalCodeEditorFontSize * charSpacing.x, 2, WHITE);
+                break;
+        }
     }
 
     void draw() {
-        SetTextLineSpacing((int)(1.5f * globalCodeEditorFontSize));
-        DrawText(buffer.c_str(), x, y - scrollHeight, globalCodeEditorFontSize, WHITE);
+        DrawRectangle(x, y, GetScreenWidth() - x, GetScreenHeight() - y, BLACK);
+        int rows = 0;
+        int columns = 0;
+        long charCount = 0;
+        for (char c : buffer) {
+            charCount++;
+            Color syntaxHighlight = WHITE;
+            if (c == '\n') {
+                rows++;
+                columns = 0;
+                continue;
+            }
+            if (c == '\t') {
+                columns += tabToSpaces;
+                continue;
+            }
+            auto charPos = Vector2{(float)(x + (columns * (globalCodeEditorFontSize * charSpacing.x))),
+                                   (float)(y - scrollHeight + (rows * globalCodeEditorFontSize * charSpacing.y))};
+            if (charPos.y < y || charPos.y > y + (GetScreenHeight() - y)) {columns++; continue;};
+            //if (scrollHeight > charPos.y) continue;
+            DrawTextEx(font, (std::string() + c).c_str(), charPos, globalCodeEditorFontSize, globalCodeEditorFontSize * 1.5f, syntaxHighlight);
+            if (charCount == cursorPos) drawCursor(charPos);
+            columns++;
+        }
+    }
+
+    void uninit() {
+        UnloadFont(font);
     }
 };

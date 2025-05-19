@@ -17,5 +17,9 @@ int main()
         mainWindow->draw();
     }
 
+    mainWindow->editor->uninit();
+
+    delete mainWindow;
+
     return 0;
 }
