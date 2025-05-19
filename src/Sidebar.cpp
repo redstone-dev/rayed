@@ -80,6 +80,20 @@ public:
 
     void after_update() {
         title = "Files in " + currentDir.stem().string();
+        int i = 0;
+        for (path path : items) {
+            auto currentY = yOffset + (itemHeight * ++i) - scrollHeight;
+            auto itemBoundingRect = Rectangle{0, (float)currentY, 200, (float)itemHeight};
+            //     Hardcoding this is the only way it works. Evil ^
+
+            // Draw mouseover highlight (if any)
+            if (CheckCollisionPointRec(GetMousePosition(), itemBoundingRect)
+                && IsMouseButtonReleased(MOUSE_BUTTON_LEFT)
+                && is_directory(path)) {
+                currentDir = path;
+                update_items();
+            }
+        }
     }
 
     void update_items() {
