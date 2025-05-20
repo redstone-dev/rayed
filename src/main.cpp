@@ -9,7 +9,7 @@ int main()
 
     InitWindow((int)(mainWindow->screenSize.x), (int)(mainWindow->screenSize.y), "rayed");
     SetTargetFPS(GetMonitorRefreshRate(GetCurrentMonitor()));
-    SetExitKey(0);
+    // SetExitKey(0);
 
     mainWindow->init();
 

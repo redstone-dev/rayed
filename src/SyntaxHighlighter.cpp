@@ -30,9 +30,14 @@ class Parser {
 
     std::vector<HighlightSpan> spans;
 
+    Parser(fs::path grammarPath) {
+        grammar = grammarPath;
+    }
+
     HighlightSpan spanAt(long charPos) {
         for (auto span : spans)
-            if (span.start <= charPos && span.end >= charPos) return span;
+            if (span.start <= charPos && span.end >= charPos)
+                return span;
         return HighlightSpan{0, 0, WHITE};
     }
 
@@ -73,14 +78,18 @@ class Parser {
         file.open(grammar);
         std::string line;
 
-        if (!file.is_open()) return;
-
+        if (!file.is_open()) {
+            std::cout << "FILE WAS NOT OPENED!\n";
+            return;
+        };
+        // read grammar file
         while (std::getline(file, line)) {
+            // get regex and colour in file
             std::string regexStr;
             std::string colourStr;
             regexStr = line.substr(0, line.find(' '));
             colourStr = line.substr(line.find(' '));
-
+            std::cout << "Found rule: " << regexStr << ": " << colourStr << "\n";
             rules.push_back(GrammarRule {
                 std::regex(regexStr),
                 stringToColour(colourStr)
@@ -90,8 +99,19 @@ class Parser {
         file.close();
     }
 
-    void highlightText(std::string text) {
-        //
+    void highlightText(std::string text)
+    {
+        for (auto rule : rules)
+        {
+            typedef std::regex_token_iterator<std::string::iterator> regTokIter;
+            // default constructor is eof
+            regTokIter eof;
+
+            regTokIter highlights(text.begin(), text.end(), rule.regex);
+            while (highlights != eof) {
+                std::cout << *highlights++ << std::endl;
+            }
+        }
     }
 
-}
+};
