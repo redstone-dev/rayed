@@ -10,7 +10,7 @@ int globalCodeEditorFontSize = 20;
 class CodeEditor {
     public:
     std::string buffer;
-    int longestLineLength = 0;
+    std::string::size_type longestLineLength = 0;
     std::filesystem::path curPath;
     Font font;
 
@@ -50,11 +50,11 @@ class CodeEditor {
 
     std::string getLineContainsIdx(long idx, char delim) {
         long start = idx, end = idx;
-        while((buffer[start] != delim && buffer[end] != delim) || (start != 0 && end == buffer.size())) {
+        while((buffer[start] != delim && buffer[end] != delim) || (start != 0 && end == static_cast<long>(buffer.size()))) {
             if (buffer[start] != delim) start--;
             if (buffer[end]   != delim) end++;
             if (start < 0) start = 0;
-            if (end > buffer.size()) end = buffer.size();
+            if (end > static_cast<long>(buffer.size())) end = static_cast<long>(buffer.size());
         }
         //start++; end--;
         return buffer.substr(start, end - start);
