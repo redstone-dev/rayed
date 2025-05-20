@@ -5,6 +5,7 @@ LIBS = -lraylib
 
 SRC_DIR = src
 BUILD_DIR = build
+FONTS_DIR = fonts
 
 TARGET = $(BUILD_DIR)/rayed
 DEBUG_TARGET = $(BUILD_DIR)/rayed_debug
@@ -49,7 +50,7 @@ else ifndef OS
 else
 	@echo "Creating release for $(ARCH) on $(OS) (that should match this architecture)"
 	rm -f $(BUILD_DIR)/*.tar.gz
-	tar -czvf $(BUILD_DIR)/$(ARCH)-$(OS).tar.gz $(BUILD_DIR)/*
+	tar -czvf $(BUILD_DIR)/$(ARCH)-$(OS).tar.gz $(BUILD_DIR)/* $(FONTS_DIR)/*
 endif
 
 clean:
