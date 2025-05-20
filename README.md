@@ -7,26 +7,51 @@ Code editor written in C++ with raylib
 
 ## Compiling
 
-Because I'm stupid, you need to install raylib as a system package, which
-is very easy on linux -- just use your package manager, and search for
+To build the project, you need to install raylib as a system package, which
+is very easy on Linux -- just use your package manager, and search for
 `raylib`, `raylib-dev` or `raylib-devel`.
 
 I don't know how to do that on Windows. On macOS, brew might work.
 
-After installing raylib, just run `build.sh`. 
+After installing raylib, you can build the project using the provided Makefile:
 
-> To create a tarball for
-a github release, run `build.sh -A<arch> -O<os>`, where `<arch>` is your
-CPU architecture (`amd64`/`aarch64`/whatever) and `<os>` is your OS
-(`linux`/`mac`/`win`).
+```bash
+make
+```
+
+To run the program after building:
+
+```bash
+make run
+```
+
+To build the program with debug flags:
+
+```bash
+make debug
+```
+
+To clean up the build directory completely:
+
+```bash
+make clean
+```
+
+> To create a tarball for a GitHub release, use the `release` target:
+> 
+> ```bash
+> make release ARCH=<arch> OS=<os>
+> ```
+> 
+> Replace `<arch>` with your CPU architecture (`amd64`/`aarch64`/whatever) and `<os>` with your OS (`linux`/`mac`/`win`).
 
 ## Bugs & crashes
 
 Find a bug or a crash? Please report it! 
 
-Specifically for segfaults, you should ideally:
-  1. compile `rayed` from source with debug flags
-  2. pop the resulting executable into `gdb` and run it
-  3. replicate said segfault
-  4. get a backtrace (enter `bt` into the `gdb` console) 
-  5. include said backtrace in your report
+Specifically for segfaults, you can use the `make debug` target, which:
+  1. compiles `rayed` with debug flags
+  2. launches the program in `gdb`
+  3. automatically generates a backtrace and saves it to `build/backtrace.txt`
+
+Include the contents of `backtrace.txt` in your report for easier debugging.
