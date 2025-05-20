@@ -26,7 +26,7 @@ class CodeEditor {
     enum CursorStyle { VERTICAL, UNDER } cursorStyle;
 
     CodeEditor() {
-        font = LoadFontEx("build/MartianMono-Regular.ttf", globalCodeEditorFontSize, NULL, 0);
+        font = LoadFontEx("fonts/MartianMono-Regular.ttf", globalCodeEditorFontSize, NULL, 0);
         cursorStyle = VERTICAL;
     }
 
