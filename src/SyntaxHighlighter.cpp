@@ -84,6 +84,7 @@ class Parser {
         };
         // read grammar file
         while (std::getline(file, line)) {
+            if (line[0] == '#' || line == "") continue;
             // get regex and colour in file
             std::string regexStr;
             std::string colourStr;
@@ -99,17 +100,28 @@ class Parser {
         file.close();
     }
 
-    void highlightText(std::string text)
+    void createHightlights(std::string text)
     {
         for (auto rule : rules)
         {
+            // std::cout << "NEW RULE\n";
             typedef std::regex_token_iterator<std::string::iterator> regTokIter;
             // default constructor is eof
             regTokIter eof;
 
             regTokIter highlights(text.begin(), text.end(), rule.regex);
             while (highlights != eof) {
-                std::cout << *highlights++ << std::endl;
+                // std::cout << ":3 ";
+                *highlights++;
+                unsigned long start = std::distance(text.begin(), highlights->first);
+                auto hlLength = highlights->length();
+                unsigned long end = start + (unsigned long)hlLength;
+
+                HighlightSpan span{
+                    start, end, rule.colour
+                };
+                std::cout << "Span from " << span.start << "-" << span.end << std::endl;
+                spans.push_back(span);
             }
         }
     }

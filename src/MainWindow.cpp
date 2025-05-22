@@ -30,7 +30,7 @@ public:
         saveBtn->pos.y = 0;
         saveBtn->height = editor->y;
 
-        parser = new Parser("build/plugins/grammars/html.grammar");
+        parser = new Parser("plugins/grammars/html.grr");
         parser->createRules();
 
         SetWindowState(FLAG_WINDOW_RESIZABLE);
@@ -48,7 +48,7 @@ public:
         editor->update();
 
         if (IsKeyReleased(KEY_F11))
-            parser->highlightText(editor->buffer);
+            parser->createHightlights(editor->buffer);
         sidebar->update();
         saveBtn->update();
     }
