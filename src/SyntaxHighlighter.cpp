@@ -69,7 +69,7 @@ class Parser {
         if (str == "BLANK")     return BLANK     ;
         if (str == "MAGENTA")   return MAGENTA   ;
         if (str == "RAYWHITE")  return RAYWHITE  ;
-        return BLANK;
+        return RED;
     }
 
     void createRules() {
@@ -89,7 +89,7 @@ class Parser {
             std::string regexStr;
             std::string colourStr;
             regexStr = line.substr(0, line.find(' '));
-            colourStr = line.substr(line.find(' '));
+            colourStr = line.substr(line.find(' ') + 1);
             std::cout << "Found rule: " << regexStr << ": " << colourStr << "\n";
             rules.push_back(GrammarRule {
                 std::regex(regexStr),
@@ -100,7 +100,7 @@ class Parser {
         file.close();
     }
 
-    void createHightlights(std::string text)
+    void createHighlights(std::string text)
     {
         for (auto rule : rules)
         {
@@ -112,7 +112,6 @@ class Parser {
             regTokIter highlights(text.begin(), text.end(), rule.regex);
             while (highlights != eof) {
                 // std::cout << ":3 ";
-                *highlights++;
                 unsigned long start = std::distance(text.begin(), highlights->first);
                 auto hlLength = highlights->length();
                 unsigned long end = start + (unsigned long)hlLength;
@@ -120,8 +119,9 @@ class Parser {
                 HighlightSpan span{
                     start, end, rule.colour
                 };
-                std::cout << "Span from " << span.start << "-" << span.end << std::endl;
+                //std::cout << "Span from " << span.start << "-" << span.end << std::endl;
                 spans.push_back(span);
+                *highlights++;
             }
         }
     }

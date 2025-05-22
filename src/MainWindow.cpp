@@ -4,7 +4,6 @@
 
 #include "Sidebar.cpp"
 #include "EditorBar.cpp"
-#include "SyntaxHighlighter.cpp"
 
 class MainWindow {
 public:
@@ -46,9 +45,6 @@ public:
             screenSize.y = GetScreenHeight();
         }
         editor->update();
-
-        if (IsKeyReleased(KEY_F11))
-            parser->createHightlights(editor->buffer);
         sidebar->update();
         saveBtn->update();
     }

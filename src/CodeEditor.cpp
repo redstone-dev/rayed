@@ -4,6 +4,7 @@
 #include <fstream>
 #include <vector>
 #include <iostream>
+#include "SyntaxHighlighter.cpp"
 
 int globalCodeEditorFontSize = 20;
 
@@ -23,11 +24,14 @@ class CodeEditor {
     int tabToSpaces = 4;
 
     Vector2 charSpacing = { 0.5f, 1.5f };
+    char xPadding;
     enum CursorStyle { VERTICAL, UNDER } cursorStyle;
+    Parser* parser;
 
     CodeEditor() {
         font = LoadFontEx("fonts/MartianMono-Regular.ttf", globalCodeEditorFontSize, NULL, 0);
         cursorStyle = VERTICAL;
+        parser = new Parser("plugins/grammars/html.grr");
     }
 
     void loadFile() {
@@ -42,6 +46,8 @@ class CodeEditor {
             }
             file.close();
         }
+        parser->createRules();
+        parser->createHighlights(buffer);
     }
 
     bool IsKeyPressedAndRepeat(KeyboardKey key) {
@@ -75,10 +81,14 @@ class CodeEditor {
         }
         if (IsKeyPressedAndRepeat(KEY_BACKSPACE) && cursorPos - 1 > -1) {
             buffer.erase(buffer.begin() + --cursorPos);
+            parser->createRules();
+            parser->createHighlights(buffer);
             return;
         }
         if (IsKeyPressedAndRepeat(KEY_ENTER)) {
             buffer.insert(buffer.begin() + cursorPos++, '\n');
+            parser->createRules();
+            parser->createHighlights(buffer);
             return;
         }
         // TODO: fix line jumping
@@ -87,8 +97,11 @@ class CodeEditor {
         // }
         // Otherwise, type it in
         auto key = (char)GetCharPressed();
-        if (key)
+        if (key) {
             buffer.insert(buffer.begin() + cursorPos++, key);
+            parser->createRules();
+            parser->createHighlights(buffer);
+        }
     }
 
     void drawCursor(Vector2 pos) {
@@ -109,7 +122,8 @@ class CodeEditor {
         long charCount = 0;
         for (char c : buffer) {
             charCount++;
-            Color syntaxHighlight = WHITE;
+            auto span = parser->spanAt(charCount);
+            Color syntaxHighlight = span.colour;
             if (c == '\n') {
                 rows++;
                 columns = 0;
