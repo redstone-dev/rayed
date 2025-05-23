@@ -126,4 +126,15 @@ class Parser {
         }
     }
 
+    #ifdef DEBUG
+    void logSpans() {
+        for (auto span : spans)
+            std::cout << "Span from " << span.start << "-" << span.end << " in"
+                << " r" << std::to_string(span.colour.r)
+                << " g" << std::to_string(span.colour.g)
+                << " b" << std::to_string(span.colour.b)
+                << std::endl;
+    }
+    #endif
+
 };
