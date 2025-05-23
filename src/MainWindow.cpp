@@ -12,6 +12,7 @@ public:
     CodeEditor*  editor;
     SaveButton*  saveBtn;
     Parser*      parser;
+    int currentCursor = MOUSE_CURSOR_ARROW; // Add variable to track current cursor
 
     void init()
     {
@@ -39,7 +40,9 @@ public:
 
     void update()
     {
-        SetMouseCursor(MOUSE_CURSOR_ARROW);
+        // Reset cursor to default at the beginning of each frame
+        currentCursor = MOUSE_CURSOR_ARROW;
+
         if (IsWindowResized()) {
             screenSize.x = GetScreenWidth();
             screenSize.y = GetScreenHeight();

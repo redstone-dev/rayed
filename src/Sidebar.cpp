@@ -10,6 +10,9 @@ using namespace std::filesystem;
 
 int globalSidebarFontSize = 20;
 
+// Forward declaration of MainWindow for reference to currentCursor
+class MainWindow;
+
 template<class T>
 class Sidebar {
 public:
@@ -17,6 +20,7 @@ public:
     int width;
     int yOffset;
     int itemHeight = globalSidebarFontSize + 2;
+    MainWindow* mainWindow; // Add reference to MainWindow
 
     const int BORDER_THICKNESS = 4;
 
@@ -47,7 +51,7 @@ public:
         // Draw mouseover highlight (if any)
         if (CheckCollisionPointRec(GetMousePosition(), itemBoundingRect)) {
             DrawRectangleRec(itemBoundingRect, DARKGRAY);
-            SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+            if (mainWindow) mainWindow->currentCursor = MOUSE_CURSOR_POINTING_HAND; // Request cursor change
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 selectedItem = items[idx - 1];
                 wasItemSelected = true;
@@ -87,11 +91,12 @@ public:
             //     Hardcoding this is the only way it works. Evil ^
 
             // Draw mouseover highlight (if any)
-            if (CheckCollisionPointRec(GetMousePosition(), itemBoundingRect)
-                && IsMouseButtonReleased(MOUSE_BUTTON_LEFT)
-                && is_directory(path)) {
-                currentDir = path;
-                update_items();
+            if (CheckCollisionPointRec(GetMousePosition(), itemBoundingRect)) {
+                if (mainWindow) mainWindow->currentCursor = MOUSE_CURSOR_POINTING_HAND; // Request cursor change
+                if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT) && is_directory(path)) {
+                    currentDir = path;
+                    update_items();
+                }
             }
         }
     }
@@ -121,6 +126,7 @@ public:
         if (CheckCollisionPointRec(GetMousePosition(), parentDirBtnBounds)) {
             DrawRectangle(parentDirBtnBounds.x + 5, parentDirBtnBounds.y,
                           parentDirBtnBounds.width - 5, parentDirBtnBounds.height, DARKGRAY);
+            if (mainWindow) mainWindow->currentCursor = MOUSE_CURSOR_POINTING_HAND; // Request cursor change
             if (IsMouseButtonReleased(0)) {
                 currentDir = currentDir.parent_path();
                 update_items();
