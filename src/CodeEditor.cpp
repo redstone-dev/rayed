@@ -2,8 +2,6 @@
 #include <raylib.h>
 #include <filesystem>
 #include <fstream>
-#include <vector>
-#include <iostream>
 #include "SyntaxHighlighter.cpp"
 
 int globalCodeEditorFontSize = 20;
@@ -25,7 +23,7 @@ class CodeEditor {
     int tabToSpaces = 4;
 
     Vector2 charSpacing = { 0.5f, 1.5f };
-    char xPadding;
+    unsigned char xPadding = 0;
     enum CursorStyle { VERTICAL, UNDER } cursorStyle;
     Parser* parser;
 
@@ -100,6 +98,9 @@ class CodeEditor {
             parser->createHighlights(buffer);
             return;
         }
+        #ifdef DEBUG
+        if (IsKeyReleased(KEY_F10)) parser->logSpans();
+        #endif
         // TODO: fix line jumping
         // if (IsKeyPressedAndRepeat(KEY_DOWN)) {
         //     std::cout << getLineContainsIdx(cursorPos, '\n') << std::endl;
@@ -116,10 +117,10 @@ class CodeEditor {
     void drawCursor(Vector2 pos) {
         switch(cursorStyle) {
             case VERTICAL:
-                DrawRectangle(pos.x + globalCodeEditorFontSize * charSpacing.x, pos.y, 2, globalCodeEditorFontSize, WHITE);
+                DrawRectangle(xPadding + pos.x + globalCodeEditorFontSize * charSpacing.x, pos.y, 2, globalCodeEditorFontSize, WHITE);
                 break;
             case UNDER:
-                DrawRectangle(pos.x, pos.y + globalCodeEditorFontSize, globalCodeEditorFontSize * charSpacing.x, 2, WHITE);
+                DrawRectangle(xPadding + pos.x, pos.y + globalCodeEditorFontSize, globalCodeEditorFontSize * charSpacing.x, 2, WHITE);
                 break;
         }
     }
@@ -143,9 +144,11 @@ class CodeEditor {
                 columns += tabToSpaces;
                 continue;
             }
-            auto charPos = Vector2{x + (columns * (globalCodeEditorFontSize * charSpacing.x)),
-                                   y - scrollHeight + (rows * globalCodeEditorFontSize * charSpacing.y)};
-            if (charPos.y < (float)y || charPos.y > (float)y + ((float)GetScreenHeight() - (float)y)) {columns++; continue;};
+
+            auto charPos = Vector2{(float)(x + (columns * (globalCodeEditorFontSize * charSpacing.x))),
+                                   (float)(y - scrollHeight + (rows * globalCodeEditorFontSize * charSpacing.y))};
+            charPos.x += (float)xPadding;
+            if (charPos.y < y || charPos.y > y + (GetScreenHeight() - y)) {columns++; continue;};
             //if (scrollHeight > charPos.y) continue;
             DrawTextEx(font, (std::string() + c).c_str(), charPos, (float)globalCodeEditorFontSize, (float)globalCodeEditorFontSize * 1.5f, syntaxHighlight);
             if (charCount == cursorPos) drawCursor(charPos);
