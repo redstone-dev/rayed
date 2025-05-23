@@ -1,6 +1,7 @@
 CXX = g++
 CXXFLAGS = -Wextra -Wall
 CXXFLAGS_DEBUG = -Wextra -Wall -g -O0 -DDEBUG
+CXXFLAGS_LINT = -Wall -Wextra -Wpedantic -Werror -Wshadow -Wnull-dereference -Wunused -Wdouble-promotion -Wformat=2 -Wstrict-aliasing=2 -Wstrict-overflow=5 -Wcast-align -Wlogical-op -Wduplicated-cond -Wduplicated-branches -Wuseless-cast
 LIBS = -lraylib
 
 SRC_DIR = src
@@ -56,8 +57,13 @@ endif
 clean:
 	rm -rf $(BUILD_DIR)
 
+lint: $(SRC)
+	$(CXX) $(CXXFLAGS_LINT) -fsyntax-only $<
+	clang-tidy $< --warnings-as-errors=* -- $(CXXFLAGS) $(DEFINES)
+	@echo "Linting completed successfully"
+
 ifneq ($(DEFINES),)
 DEFINES := $(foreach def,$(DEFINES),-D$(def))
 endif
 
-.PHONY: all run release clean debug
+.PHONY: all run release clean debug lint

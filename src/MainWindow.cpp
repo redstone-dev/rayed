@@ -39,7 +39,7 @@ public:
 
     void update()
     {
-        SetMouseCursor(MOUSE_CURSOR_ARROW);
+        // SetMouseCursor(MOUSE_CURSOR_ARROW);
         if (IsWindowResized()) {
             screenSize.x = GetScreenWidth();
             screenSize.y = GetScreenHeight();
@@ -63,6 +63,13 @@ public:
         saveBtn->draw();
 
         auto text = "Current selection: " + sidebar->selectedItem.string();
+
+        #ifdef DEBUG
+        // Draw red horizontal and vertical lines at the mouse position
+        Vector2 mousePos = GetMousePosition();
+        DrawLine(0, mousePos.y, screenSize.x, mousePos.y, RED); // Horizontal line
+        DrawLine(mousePos.x, 0, mousePos.x, screenSize.y, RED); // Vertical line
+        #endif
 
         EndDrawing();
     }
