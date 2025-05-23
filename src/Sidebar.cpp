@@ -30,6 +30,31 @@ public:
 
     virtual void update() {
         wasItemSelected = false;
+
+        // Ensure width is properly initialized
+        if (width <= 0) {
+            width = 200; // Default width if not set
+        }
+
+        // Check if the cursor is within the sidebar
+        Vector2 mousePos = GetMousePosition();
+        bool isCursorInsideSidebar = mousePos.x >= 0 && mousePos.x <= width &&
+                                     mousePos.y >= yOffset && mousePos.y <= GetScreenHeight();
+
+        bool isHoveringItem = false;
+        for (size_t i = 0; i < items.size(); ++i) {
+            auto currentY = yOffset + (itemHeight * (i + 1)) - scrollHeight;
+            auto itemBoundingRect = Rectangle{0, (float)currentY, (float)width, (float)itemHeight};
+            if (CheckCollisionPointRec(mousePos, itemBoundingRect)) {
+                isHoveringItem = true;
+                break;
+            }
+        }
+
+        if (isCursorInsideSidebar && !isHoveringItem) {
+            SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+        }
+
         scrollHeight += GetMouseWheelMoveV().y * -scrollSens;
         if (scrollHeight < 0) scrollHeight = 0; // User can't scroll back further than the beginning of the list
         after_update();

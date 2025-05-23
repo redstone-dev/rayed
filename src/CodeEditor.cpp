@@ -17,7 +17,8 @@ class CodeEditor {
 
     int x; int y;
 
-    long cursorPos;
+    // The cursor position can never be negative
+    size_t cursorPos; // Changed from unsigned long to size_t
     long scrollHeight;
     float scrollSens = 20.f;
 
@@ -56,17 +57,25 @@ class CodeEditor {
 
     std::string getLineContainsIdx(long idx, char delim) {
         long start = idx, end = idx;
-        while((buffer[start] != delim && buffer[end] != delim) || (start != 0 && end == static_cast<long>(buffer.size()))) {
+        while((buffer[start] != delim && buffer[end] != delim) || (start != 0 && end == (long)buffer.size())) {
             if (buffer[start] != delim) start--;
             if (buffer[end]   != delim) end++;
             if (start < 0) start = 0;
-            if (end > static_cast<long>(buffer.size())) end = static_cast<long>(buffer.size());
+            if (end > (long)buffer.size()) end = (long)buffer.size();
         }
         //start++; end--;
         return buffer.substr(start, end - start);
     }
 
     void update() {
+        // Check if the cursor is within the code editor
+        Vector2 mousePos = GetMousePosition();
+        bool isCursorInsideEditor = mousePos.x >= x && mousePos.x <= GetScreenWidth() &&
+                                    mousePos.y >= y && mousePos.y <= GetScreenHeight();
+        if (isCursorInsideEditor) {
+            SetMouseCursor(MOUSE_CURSOR_IBEAM);
+        }
+
         scrollHeight += GetMouseWheelMoveV().y * -scrollSens;
         if (scrollHeight < 0) scrollHeight = 0; // User can't scroll back further than the beginning of the list
 
@@ -75,11 +84,11 @@ class CodeEditor {
             cursorPos++;
             return;
         }
-        if (IsKeyPressedAndRepeat(KEY_LEFT) && cursorPos - 1 > -1) {
+        if (IsKeyPressedAndRepeat(KEY_LEFT) && cursorPos > 0) {
             cursorPos--;
             return;
         }
-        if (IsKeyPressedAndRepeat(KEY_BACKSPACE) && cursorPos - 1 > -1) {
+        if (IsKeyPressedAndRepeat(KEY_BACKSPACE) && cursorPos > 0) {
             buffer.erase(buffer.begin() + --cursorPos);
             parser->createRules();
             parser->createHighlights(buffer);
@@ -119,7 +128,8 @@ class CodeEditor {
         DrawRectangle(x, y, GetScreenWidth() - x, GetScreenHeight() - y, BLACK);
         int rows = 0;
         int columns = 0;
-        long charCount = 0;
+        // Character count cannot be negative
+        unsigned long charCount = 0;
         for (char c : buffer) {
             charCount++;
             auto span = parser->spanAt(charCount);
@@ -133,11 +143,11 @@ class CodeEditor {
                 columns += tabToSpaces;
                 continue;
             }
-            auto charPos = Vector2{(float)(x + (columns * (globalCodeEditorFontSize * charSpacing.x))),
-                                   (float)(y - scrollHeight + (rows * globalCodeEditorFontSize * charSpacing.y))};
-            if (charPos.y < y || charPos.y > y + (GetScreenHeight() - y)) {columns++; continue;};
+            auto charPos = Vector2{x + (columns * (globalCodeEditorFontSize * charSpacing.x)),
+                                   y - scrollHeight + (rows * globalCodeEditorFontSize * charSpacing.y)};
+            if (charPos.y < (float)y || charPos.y > (float)y + ((float)GetScreenHeight() - (float)y)) {columns++; continue;};
             //if (scrollHeight > charPos.y) continue;
-            DrawTextEx(font, (std::string() + c).c_str(), charPos, globalCodeEditorFontSize, globalCodeEditorFontSize * 1.5f, syntaxHighlight);
+            DrawTextEx(font, (std::string() + c).c_str(), charPos, (float)globalCodeEditorFontSize, (float)globalCodeEditorFontSize * 1.5f, syntaxHighlight);
             if (charCount == cursorPos) drawCursor(charPos);
             columns++;
         }

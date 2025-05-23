@@ -1,7 +1,6 @@
 #include <raylib.h>
 #include "MainWindow.cpp"
 #include "debug.hpp"
-//#include <iostream>
 
 int main()
 {

@@ -34,7 +34,7 @@ class Parser {
         grammar = grammarPath;
     }
 
-    HighlightSpan spanAt(long charPos) {
+    HighlightSpan spanAt(unsigned long charPos) {
         for (auto span : spans)
             if (span.start <= charPos && span.end >= charPos)
                 return span;
