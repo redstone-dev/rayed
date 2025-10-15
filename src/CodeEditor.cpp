@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <fstream>
 #include "SyntaxHighlighter.cpp"
+#include "CursorState.cpp"
 
 int globalCodeEditorFontSize = 20;
 
@@ -67,11 +68,12 @@ class CodeEditor {
 
     void update() {
         // Check if the cursor is within the code editor
+        // TODO: Use GetPointRe
         Vector2 mousePos = GetMousePosition();
         bool isCursorInsideEditor = mousePos.x >= x && mousePos.x <= GetScreenWidth() &&
                                     mousePos.y >= y && mousePos.y <= GetScreenHeight();
         if (isCursorInsideEditor) {
-            SetMouseCursor(MOUSE_CURSOR_IBEAM);
+            CursorState::mouseCursor = MOUSE_CURSOR_IBEAM;
         }
 
         scrollHeight += GetMouseWheelMoveV().y * -scrollSens;

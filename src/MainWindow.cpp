@@ -2,6 +2,8 @@
 #include <iostream>
 #include <raylib.h>
 
+#include "CursorState.cpp"
+
 #include "Sidebar.cpp"
 #include "EditorBar.cpp"
 
@@ -29,6 +31,8 @@ public:
         saveBtn->pos.y = 0;
         saveBtn->height = editor->y;
 
+        CursorState::init();
+
         parser = new Parser("plugins/grammars/html.grr");
         parser->createRules();
 
@@ -47,6 +51,7 @@ public:
         editor->update();
         sidebar->update();
         saveBtn->update();
+        CursorState::update();
     }
 
     void draw()

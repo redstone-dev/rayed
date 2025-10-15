@@ -2,6 +2,7 @@
 #include <vector>
 #include <filesystem>
 #include "debug.hpp"
+#include "CursorState.cpp"
 #ifdef DEBUG
 #include <iostream>
 #endif
@@ -52,7 +53,7 @@ public:
         }
 
         if (isCursorInsideSidebar && !isHoveringItem) {
-            SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+            CursorState::mouseCursor = MOUSE_CURSOR_DEFAULT;
         }
 
         scrollHeight += GetMouseWheelMoveV().y * -scrollSens;
@@ -72,7 +73,7 @@ public:
         // Draw mouseover highlight (if any)
         if (CheckCollisionPointRec(GetMousePosition(), itemBoundingRect)) {
             DrawRectangleRec(itemBoundingRect, DARKGRAY);
-            SetMouseCursor(MOUSE_CURSOR_POINTING_HAND);
+            CursorState::mouseCursor = MOUSE_CURSOR_POINTING_HAND;
             if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
                 selectedItem = items[idx - 1];
                 wasItemSelected = true;
