@@ -9,7 +9,7 @@ Code editor written in C++ with raylib
 
 To build the project, you need to install raylib as a system package, which
 is very easy on Linux -- just use your package manager, and search for
-`raylib`, `raylib-dev` or `raylib-devel`.
+`raylib`, `raylib-dev` or `raylib-devel`. Also install Lua in a similar vein.
 
 I don't know how to do that on Windows. On macOS, brew might work.
 
