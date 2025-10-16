@@ -3,7 +3,12 @@
 #include <filesystem>
 #include <fstream>
 #include "SyntaxHighlighter.cpp"
+
+#ifndef CURSOR_STATE
 #include "CursorState.cpp"
+#endif
+
+#define CODE_EDITOR
 
 int globalCodeEditorFontSize = 20;
 

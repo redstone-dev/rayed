@@ -1,5 +1,7 @@
 #include <raylib.h>
 
+#define CURSOR_STATE
+
 class CursorState {
 public:
     static int mouseCursor;

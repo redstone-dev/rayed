@@ -2,7 +2,9 @@
 #include <iostream>
 #include <raylib.h>
 
+#ifndef CURSOR_STATE
 #include "CursorState.cpp"
+#endif
 
 #include "Sidebar.cpp"
 #include "EditorBar.cpp"

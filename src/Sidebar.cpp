@@ -2,7 +2,11 @@
 #include <vector>
 #include <filesystem>
 #include "debug.hpp"
+
+#ifndef CURSOR_STATE
 #include "CursorState.cpp"
+#endif
+
 #ifdef DEBUG
 #include <iostream>
 #endif
