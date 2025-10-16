@@ -2,7 +2,7 @@ CXX = g++
 CXXFLAGS = -Wextra -Wall
 CXXFLAGS_DEBUG = -Wextra -Wall -g -O0 -DDEBUG
 CXXFLAGS_LINT = -Wall -Wextra -Wpedantic -Werror -Wshadow -Wnull-dereference -Wunused -Wdouble-promotion -Wformat=2 -Wstrict-aliasing=2 -Wstrict-overflow=5 -Wcast-align -Wlogical-op -Wduplicated-cond -Wduplicated-branches -Wuseless-cast
-LIBS = -lraylib
+LIBS = -lraylib -llua
 
 SRC_DIR = src
 BUILD_DIR = build
